@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ConnectionLog;
 use App\Models\Device;
 use App\Models\DeviceAccessRequest;
-use App\Models\ConnectionLog;
 use Illuminate\Http\Request;
 
 class DeviceController extends Controller
@@ -48,7 +48,7 @@ class DeviceController extends Controller
 
         $this->applyFirewall();
 
-        return back()->with('success', 'Device approved and firewall updated.');
+        return back()->with('success', 'Device approved. Firewall updated.');
     }
 
     public function deny(Device $device)
@@ -78,10 +78,10 @@ class DeviceController extends Controller
 
         $this->applyFirewall();
 
-        return back()->with('success', 'Device denied and firewall updated.');
+        return back()->with('success', 'Device denied. Firewall updated.');
     }
 
-    public function setRole(Request $request, Device $device)
+    public function updateRole(Request $request, Device $device)
     {
         $data = $request->validate([
             'role' => ['required', 'in:admin,staff,guest'],
@@ -98,7 +98,7 @@ class DeviceController extends Controller
         $script = base_path('apply_firewall.php');
 
         if (file_exists($script)) {
-            shell_exec('php ' . escapeshellarg($script) . ' > /dev/null 2>&1 &');
+            shell_exec(PHP_BINARY . ' ' . escapeshellarg($script) . ' > /dev/null 2>&1 &');
         }
     }
 }
